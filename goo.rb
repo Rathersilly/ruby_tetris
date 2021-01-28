@@ -3,7 +3,7 @@ require 'io/console'
 require 'io/wait'
   STDIN.echo = false
   STDIN.raw!
-def char_if_pressed
+def key_pressed #char_if_pressed
   if STDIN.ready?
     input = STDIN.read_nonblock(1) rescue nil
     if input == "\e" 
@@ -16,8 +16,8 @@ def char_if_pressed
 
   #STDIN.iflush
 end
-while true
-  c = char_if_pressed
+while false #yeah lets disable this
+  c = key_pressed
   puts "[#{c}]" if c
   puts "tick"
   if c == "\u0003"
