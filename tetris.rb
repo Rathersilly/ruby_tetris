@@ -5,23 +5,26 @@ require './collide'
 require './init'
 require 'pry'
 require './goo'
+require 'logger'
 
 origin = [10, 20]
 
 grid = BOARD.dup
+LOGFILE = 'log_tetris.log'
 
 class Game
   def initialize
 
+    @logger = Logger.new(LOGFILE)
     @quit_flag = false
     @grid = BOARD.dup
     @guys = []
     @start_pos = [0, COLS / 2 - 1] # starting position of tet
     @turn = 0 #0 is first piece, 1 is 2nd...
     @subturn = 0 # each subturn, piece descends
-    @interval = 1 # time between subturns
-    @interval_frames = 3
-    @frame_time = 0.3#@inteval.to_f/@interval_frames
+    #@interval = 1 # time between subturns
+    @subturn_frames = 3
+    @frame_time = 0.3#@inteval.to_f/@subturn_frames
 
     system('clear')
     draw
@@ -43,9 +46,11 @@ class Game
 
   def turn_loop
     turn_state = BOARD.mcopy # save state at start of turn(each block is turn)
-    @pos ||= @start_pos
     #put first piece in position
-    test_grid = turn_state.mcopy.merge(TET, @pos)
+    @pos ||= @start_pos
+    collision = nil
+
+    test_grid = turn_state.mcopy.collide(TET, @pos)
         if test_grid.nil?
           # couldnt place first piece
           #turn_state = @grid
@@ -57,10 +62,11 @@ class Game
     draw # first draw of turn
     
     loop do #subturn loop
-      row = @pos[0] ; col = @pos[1]
-      @interval_frames.times do |frame| #subsubturn
+      row = @pos[0]  ; col = @pos[1]
+      @subturn_frames.times do |frame| #subsubturn
         move = key_pressed
         if move
+          old_pos = @pos
           print "move: #{move[0]}"
           #sleep 1
           case move
@@ -69,6 +75,8 @@ class Game
             col -= 1
           when 'j'
             row += 1
+          when 'k'
+            row -= 1
           when 'l'
             col += 1
           when 'q'
@@ -76,8 +84,18 @@ class Game
             break
           end
           @pos = [row, col]
-          test_grid = turn_state.mcopy.merge(TET, @pos)
-          @grid = test_grid
+          @logger.info("@pos: #{@pos}, old_pos: #{old_pos}")
+          test_grid = turn_state.mcopy.collide(TET, @pos)
+          @logger.info("#{test_grid}")
+          if test_grid == nil
+            @pos = old_pos
+            #this seems fine
+            #draw("test_grid was nil",@grid)
+            #sleep 5
+          else
+            @grid = test_grid
+          end
+          @logger.info("TWO @pos: #{@pos}, old_pos: #{old_pos}")
           draw("T: #{@turn}, ST: #{@subturn}, F: #{frame}, m: #{move}, p: #{@pos}") # call only if moved
 
           # if reaches bottom, next turn
@@ -87,10 +105,13 @@ class Game
         sleep @frame_time
       end
       break if @quit_flag == true
-      row += 1 if @subturn > 0
-      @pos = [row, col]
-      test_grid = turn_state.mcopy.merge(TET, @pos)
-      # draw(turn_state, "turn_state2#{turn_state.object_id}")
+       
+      @pos[0] += 1 if @subturn > 0
+      @logger.info("THREE @pos: #{@pos}")
+      #@pos = [row, col]
+      @logger.info("increasing to row #{row}")
+      @logger.info("@pos: #{@pos}")
+      test_grid = turn_state.mcopy.collide(TET, @pos)
         if test_grid.nil?
           turn_state = @grid
           @turn += 1
