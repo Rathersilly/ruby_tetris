@@ -52,7 +52,7 @@ def display2(grid)
 end
 
 # tetromino = Array.new
-TET = s2da("\
+TET_O = s2da("\
 @@
 @@")
 

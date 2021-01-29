@@ -17,6 +17,43 @@ def key_pressed #char_if_pressed
 
   #STDIN.iflush
 end
+
+class Game
+  def get_move(test_pos) # return uu
+    row = @pos[0]; col = @pos[1]
+    @move = key_pressed
+    if @move
+      print "move: #{@move[0]}"
+      # sleep 1
+      case @move
+      when 'h' || '\e[D'
+        puts 'h'
+        col -= 1
+      when 'j'
+        row += 1
+      when 'k'
+        row -= 1
+      when 'l'
+        col += 1
+      when "\u0003"
+        exit
+      when 'q'
+        @quit_flag = true
+      end
+    else
+      return nil
+    end
+    test_pos = [row, col]
+
+    return test_pos
+  end
+end
+
+
+
+
+
+
 while false #yeah lets disable this
   c = key_pressed
   puts "[#{c}]" if c
@@ -29,5 +66,3 @@ while false #yeah lets disable this
   sleep 1
 
 end
-  STDIN.echo = true
-  STDIN.cooked!
