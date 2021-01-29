@@ -13,7 +13,8 @@ grid = BOARD.dup
 LOGFILE = 'log_tetris.log'
 
 class Game
-  def initialize
+  attr_accessor :grid
+  def initialize(test=false)
 
     @logger = Logger.new(LOGFILE)
     @quit_flag = false
@@ -28,7 +29,7 @@ class Game
 
     system('clear')
     draw
-    game_loop
+    game_loop unless test == true
   ensure
 
   end
