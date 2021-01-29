@@ -12,6 +12,7 @@ def key_pressed #char_if_pressed
     end
   end
   STDIN.cooked!
+  
   input
 
   #STDIN.iflush
