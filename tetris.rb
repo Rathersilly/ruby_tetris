@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require './gfx'
 require './collide'
 require './init'
 require 'pry'
-require './goo'
+require './keyboard_input'
 require 'logger'
 
 LOGFILE = 'log_tetris.log'
@@ -31,19 +30,21 @@ class Game
   end
 
   def game_loop
-    @pos = @start_pos
-    # while true
-    turn_loop
-
-    # end
+    while true
+      turn_loop
+      exit if @quit_flag == true
+    end
   ensure
     STDIN.echo = true
     STDIN.cooked!
     puts 'bye!' if @quit_flag == true
   end
 
-  def turn_loop # turn_loop: from block appearing until block immobile
+  # turn_loop: from block appearing until block immobile
+  def turn_loop
     @turn_state = @grid.mcopy # save state at start of turn(each block is turn)
+    @pos = @start_pos
+    @subturn = 0
     subturn_loop
   end
 
@@ -70,7 +71,7 @@ class Game
       if test_grid.nil? # if dropping row makes collision
         @turn_state = @grid.mcopy
         @turn += 1
-        # break
+        break
       else
         @grid = test_grid
         @subturn += 1
@@ -81,7 +82,8 @@ class Game
     end
   end
 
-  def frame_loop # frame_loop: player can move block once per frame
+  # frame_loop: player can move block once per frame
+  def frame_loop
     row = @pos[0]; col = @pos[1]
     @subturn_frames.times do |frame| # subsubturn
       test_pos = get_move(@pos)
@@ -96,7 +98,7 @@ class Game
         end
         @logger.info("TWO @pos: #{@pos}, test_pos: #{test_pos}")
         draw("T: #{@turn}, ST: #{@subturn}, F: #{frame}, m: #{@move}, p: #{@pos}") # call only if moved
-
+        @move = nil
         # if reaches bottom, next turn
         #
       end
@@ -127,6 +129,7 @@ class Game
 
     puts 'hjkl to move'
     STDIN.echo = false
+    STDIN.iflush
     STDIN.raw!
   end
 end
