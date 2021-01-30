@@ -51,9 +51,27 @@ def display2(grid)
   gets
 end
 
-# tetromino = Array.new
 TET_O = s2da("\
 @@
 @@")
 
-# p s2da(TET)
+TET_I = s2da("\
+I
+I
+I
+I")
+TET_L = s2da("\
+I 
+I 
+II")
+TET_J = s2da("\
+ J
+ J
+JJ")
+TET_S = s2da("\
+ SS 
+SS ")
+TET_Z = s2da("\
+ZZ 
+ ZZ")
+TETS = [TET_O, TET_I, TET_L, TET_J, TET_S, TET_Z]

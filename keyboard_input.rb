@@ -17,7 +17,7 @@ end
 
 class Game
   def get_move(test_pos) # return uu
-    row = @pos[0]; col = @pos[1]
+    row = test_pos[0]; col = test_pos[1]
     @move = key_pressed
     if @move
       print "move: #{@move[0]}"

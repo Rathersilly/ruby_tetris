@@ -13,7 +13,10 @@ class Game
 
   def initialize(test = false)
     @logger = Logger.new(LOGFILE)
+    @logger.info("Game start")
     @quit_flag = false
+    @game_over_flag = false
+    @score = 0
     @grid = BOARD.mcopy
     @guys = []
     @start_pos = [0, COLS / 2 - 1] # starting position of tet
@@ -21,8 +24,9 @@ class Game
     @subturn = 0 # each subturn, piece descends
     # @interval = 1 # time between subturns
     @subturn_frames = 3
-    @frame_time = 0.3 # @inteval.to_f/@subturn_frames
+    @frame_time = 0.1 # @inteval.to_f/@subturn_frames
     @move = nil
+    @tet = nil
 
     system('clear')
     draw
@@ -33,17 +37,24 @@ class Game
     while true
       turn_loop
       exit if @quit_flag == true
+      break if @game_over_flag == true
     end
   ensure
     STDIN.echo = true
     STDIN.cooked!
+    if @game_over_flag
+      puts "GAME OVER. TURN: #{@turn}. SCORE: #{@score}"
+    end
     puts 'bye!' if @quit_flag == true
   end
 
   # turn_loop: from block appearing until block immobile
   def turn_loop
+    @tet = TETS.sample
+    @logger.info("turn #{@turn}")
+    STDIN.iflush
     @turn_state = @grid.mcopy # save state at start of turn(each block is turn)
-    @pos = @start_pos
+    @pos = @start_pos.mcopy
     @subturn = 0
     subturn_loop
   end
@@ -52,13 +63,18 @@ class Game
     loop do # subturn loop: block descends each subturn
       break if @quit_flag == true
 
-      test_grid = @turn_state.mcopy.collide(TET_O, @pos)
+      test_grid = @turn_state.mcopy.collide(@tet, @pos)
       if test_grid.nil?
+        @game_over_flag = true
+        break
+         
+
         # couldnt place first piece, maybe cuz lost the game
         # break
       else
         @grid = test_grid
       end
+      draw("T: #{@turn}, ST: #{@subturn}") # draws the block down the next row
       # draw # first draw of turn
       frame_loop # block can move once per frame
 
@@ -67,7 +83,7 @@ class Game
       @logger.info("@pos: #{@pos}")
 
       @pos[0] += 1 if @subturn > 0
-      test_grid = @turn_state.mcopy.collide(TET_O, @pos) #
+      test_grid = @turn_state.mcopy.collide(@tet, @pos) #
       if test_grid.nil? # if dropping row makes collision
         @turn_state = @grid.mcopy
         @turn += 1
@@ -90,10 +106,10 @@ class Game
       break if @quit_flag == true
       if test_pos
         @logger.info("@pos: #{@pos}, test_pos: #{test_pos}")
-        test_grid = @turn_state.mcopy.collide(TET_O, test_pos)
+        test_grid = @turn_state.mcopy.collide(@tet, test_pos)
         @logger.info(test_grid.to_s)
         unless test_grid.nil?
-          @pos = test_pos
+          @pos = test_pos.mcopy
           @grid = test_grid
         end
         @logger.info("TWO @pos: #{@pos}, test_pos: #{test_pos}")
@@ -117,7 +133,7 @@ class Game
     # print "\e[0;0H"
 
     array.each_with_index do |row, i|
-      row.each_with_index do |_col, j|
+      row.each_with_index do |col, j|
         print array[i][j]
       end
       puts
