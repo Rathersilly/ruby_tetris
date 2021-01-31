@@ -1,16 +1,20 @@
 require 'io/console'
 require 'io/wait'
+require 'logger'
 #  STDIN.echo = false
 #  STDIN.raw!
 def key_pressed #char_if_pressed
   if STDIN.ready?
-    input = STDIN.read_nonblock(1) rescue nil
+    input = STDIN.read_nonblock(2) rescue nil
+    @logger.info("INPUT input: #{input}, class: #{input.class}") if !input.nil?
     if input == "\e" 
       input << STDIN.read_nonblock(3) rescue nil
       input << STDIN.read_nonblock(2) rescue nil
+      #@logger.info("JJJJJJJJtemp: #{temp}, input: #{input}, class: #{input.class}") if !input.nil?
     end
   end
   STDIN.cooked!
+  @logger.info("input: #{input}, class: #{input.class}") if !input.nil?
   input
 
 end
@@ -20,13 +24,17 @@ class Game
     row = test_pos[0]; col = test_pos[1]
     @move = key_pressed
     if @move
-      print "move: #{@move[0]}"
+      @logger.info( "move: #{@move}")
       # sleep 1
-      case @move
+      case @move[0]
       when 'h' || '\e[D'
         puts 'h'
         col -= 1
       when 'j'
+        if @move[1] == 'j'
+          @logger.info("jj")
+          #drop to bottom
+        end
         row += 1
       when 'k'
         row -= 1

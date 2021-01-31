@@ -52,8 +52,8 @@ def display2(grid)
 end
 
 TET_O = s2da("\
-@@
-@@")
+OO
+OO")
 
 TET_I = s2da("\
 I
@@ -61,15 +61,15 @@ I
 I
 I")
 TET_L = s2da("\
-I 
-I 
-II")
+L 
+L 
+LL")
 TET_J = s2da("\
  J
  J
 JJ")
 TET_S = s2da("\
- SS 
+ SS
 SS ")
 TET_Z = s2da("\
 ZZ 

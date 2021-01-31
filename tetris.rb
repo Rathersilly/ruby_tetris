@@ -62,8 +62,9 @@ class Game
   def subturn_loop
     loop do # subturn loop: block descends each subturn
       break if @quit_flag == true
+      @logger.info("T #{@turn}, ST #{@subturn}, TET #{@tet}, pos #{@pos}")
 
-      test_grid = @turn_state.mcopy.collide(@tet, @pos)
+      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy)
       if test_grid.nil?
         @game_over_flag = true
         break
@@ -83,7 +84,7 @@ class Game
       @logger.info("@pos: #{@pos}")
 
       @pos[0] += 1 if @subturn > 0
-      test_grid = @turn_state.mcopy.collide(@tet, @pos) #
+      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy) 
       if test_grid.nil? # if dropping row makes collision
         @turn_state = @grid.mcopy
         @turn += 1
@@ -106,8 +107,8 @@ class Game
       break if @quit_flag == true
       if test_pos
         @logger.info("@pos: #{@pos}, test_pos: #{test_pos}")
-        test_grid = @turn_state.mcopy.collide(@tet, test_pos)
-        @logger.info(test_grid.to_s)
+        test_grid = @turn_state.mcopy.collide(@tet, test_pos.mcopy)
+        #@logger.info(test_grid.to_s)
         unless test_grid.nil?
           @pos = test_pos.mcopy
           @grid = test_grid

@@ -18,15 +18,14 @@ class Array
     ary = self.mcopy
     collision = nil
     row = pos[0]; col = pos[1]
-
-    item[0].size.times do |i|
-      item.size.times do |j|
-        ary_pix = ary[row+i][col+j]
-        item_pix = item[i][j]
+    item[0].size.times do |c|
+      item.size.times do |r|
+        ary_pix = ary[row+r][col+c]
+        item_pix = item[r][c]
         
         if item_pix != ' ' #if this pixel of item isnt empty
           if ary_pix == ' ' #no collision
-            ary[row + i][col + j] = item[i][j]
+            ary[row + r][col + c] = item[r][c]
 
           else #collision
             log.info("collision found: #{pos}")
