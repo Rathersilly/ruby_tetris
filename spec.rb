@@ -33,10 +33,6 @@ describe Game do
   it 'should detect completed rows' do
     @grid[ROWS - 2] = s2da("#" + "T" *(COLS - 2) + "#")
     @grid[ROWS - 3] = s2da("#" + "T" *(COLS - 2) + "#")
-    STDIN.cooked!
-    STDOUT.puts "HIHIHIH"  # => 
-    STDOUT.puts "#{@grid.inspect}"
-    #sleep 10
     expect(@game.process_completed_lines).to eq(2)
 
 

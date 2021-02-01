@@ -74,7 +74,10 @@ class Game
       break if @quit_flag == true
       @logger.info("T #{@turn}, ST #{@subturn}, TET #{@tet}, pos #{@pos}")
 
-      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy)
+      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy) #if @turn < 2
+      #logger.info("test_grid, #{pretty(test_grid)}")
+      #test_grid = test_collide(@turn_state, @tet, @pos.mcopy) #if @turn > 1
+
       if test_grid.nil?
         @game_over_flag = true
         break

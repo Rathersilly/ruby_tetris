@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 require 'logger'
+require 'rubygems'
+require 'bundler/setup'
+require 'bundler'
+require 'pry'
+require 'pry-nav'
 
 LOGFILE = 'log_collision.log'
 class Array
@@ -16,24 +21,27 @@ class Array
     log = Logger.new(LOGFILE)
     
     ary = self.mcopy
-    log.info("entering collision")
-            log.info(pretty(ary))
-    collision = nil
+    #log.info("entering collision")
+    #log.info(pretty(ary))
     row = pos[0]; col = pos[1]
-    item[0].size.times do |c|
-      item.size.times do |r|
-        ary_pix = ary[row+r][col+c]
-        item_pix = item[r][c]
+    item.each_index do |r|
+      item[0].each_index do |c|
+        #log.info("#{p ary_pix}, #{p item_pix}, r: #{r}, c: #{c}")
+            #log.info("wtf")
+            #log.info(pretty(ary))# WTF INDEED
         
-        if item_pix != ' ' #if this pixel of item isnt empty
-          if ary_pix == ' ' #no collision
+        if item[r][c] != ' ' #if this pixel of item isnt empty
+          if ary[row+r][col+c] == ' ' #no collision
             ary[row + r][col + c] = item[r][c]
+            #log.info("HERE#{ary_pix}, #{item_pix}, r: #{r}, c: #{c}, item_pix: #{item_pix}")
+            #log.info("HERE#{ary_pix}, #{item_pix}, row+r: #{row+r}, col+c: #{col+c}, item_pix: #{item_pix}")
+            #log.info(pretty(ary))
 
           else #collision
             
-            log.info("collision: #{pos}, ary_pix: #{ary_pix}, item_pix: #{item_pix}")
-            log.info("row: #{row}, col: #{col}")
-            log.info(pretty(ary))
+            #log.info("collision: #{row+r},#{col+c}, ary_pix: #{ary_pix}, item_pix: #{item_pix}")
+            # log.info("row: #{row}, col: #{col}")
+            #log.info(pretty(ary))
             return nil
           end
         end
@@ -52,14 +60,13 @@ class Array
 end
 class Game
   def process_completed_lines
-    # from grid[-2][
-    completed_rows = []
+    completed_rows = []       #stores the indices of completed rows
     anim_array = @grid.mcopy
 
     @grid.each_with_index do |row, i|
       if !row.include?(" ") && i != @grid.size  - 1
         completed_rows << i
-        anim_array[i] = COMPLETED_ROW # row.map { |x| x == "#" ? "#" : "*" } 
+        anim_array[i] = COMPLETED_ROW
 
       end
     end
@@ -83,3 +90,26 @@ class Game
   end
 end
 
+def test_collide(array,item, pos)
+  ary_pix = ''
+  item_pix = ''
+  
+  ary = array.mcopy
+  row = pos[0]; col = pos[1]
+  item.each_index do |r|
+    item[0].each_index do |c|
+      ary_pix = ary[row+r][col+c]
+      item_pix = item[r][c]
+      if item_pix != ' ' #if this pixel of item isnt empty
+        if ary_pix == ' ' #no collision
+          ary[row + r][col + c] = item_pix  
+        else #collision
+          return nil
+        end
+      end
+
+
+    end
+  end
+  ary
+end
