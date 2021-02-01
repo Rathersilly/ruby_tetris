@@ -28,9 +28,13 @@ class Game
     @move = nil
     @tet = nil
 
+    start
+  end
+  def start
     system('clear')
     draw
-    game_loop unless test == true
+    game_loop
+
   end
 
   def game_loop
@@ -44,20 +48,26 @@ class Game
     STDIN.cooked!
     if @game_over_flag
       puts "GAME OVER. TURN: #{@turn}. SCORE: #{@score}"
+      puts "T #{@turn}, ST #{@subturn}, TET #{@tet}, pos #{@pos}"
+      pretty(@grid)
+      pretty(@turn_state)
     end
     puts 'bye!' if @quit_flag == true
   end
 
   # turn_loop: from block appearing until block immobile
   def turn_loop
-    @tet = TETS.sample
+    @tet = TET_2ROW#.sample
     @logger.info("turn #{@turn}")
     STDIN.iflush
     @turn_state = @grid.mcopy # save state at start of turn(each block is turn)
     @pos = @start_pos.mcopy
     @subturn = 0
     subturn_loop
+    # check for full row
+    process_completed_lines
   end
+
 
   def subturn_loop
     loop do # subturn loop: block descends each subturn
@@ -152,3 +162,4 @@ class Game
 end
 
 Game.new
+

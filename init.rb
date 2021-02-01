@@ -51,6 +51,12 @@ def display2(grid)
   gets
 end
 
+def pretty(array)
+  array.each do |row|
+    p row
+  end
+end
+
 TET_O = s2da("\
 OO
 OO")
@@ -75,3 +81,11 @@ TET_Z = s2da("\
 ZZ 
  ZZ")
 TETS = [TET_O, TET_I, TET_L, TET_J, TET_S, TET_Z]
+
+TET_ROW = s2da("XXXXX")
+TET_2ROW = s2da("\
+XXXXX
+XXXXX")
+
+EMPTY_ROW = ("#" + " " * (COLS - 2) + "#").split('')
+COMPLETED_ROW = ("#" + "*" * (COLS - 2) + "#").split('')

@@ -16,6 +16,8 @@ class Array
     log = Logger.new(LOGFILE)
     
     ary = self.mcopy
+    log.info("entering collision")
+            log.info(pretty(ary))
     collision = nil
     row = pos[0]; col = pos[1]
     item[0].size.times do |c|
@@ -28,7 +30,10 @@ class Array
             ary[row + r][col + c] = item[r][c]
 
           else #collision
-            log.info("collision found: #{pos}")
+            
+            log.info("collision: #{pos}, ary_pix: #{ary_pix}, item_pix: #{item_pix}")
+            log.info("row: #{row}, col: #{col}")
+            log.info(pretty(ary))
             return nil
           end
         end
@@ -45,28 +50,36 @@ class Array
     ary
   end
 end
+class Game
+  def process_completed_lines
+    # from grid[-2][
+    completed_rows = []
+    anim_array = @grid.mcopy
 
-  def display(msg = 'TETRIS', array = @grid)
-    system('clear')
-    STDIN.cooked!
-    # puts "T E T R I S".center(COLS)
-    puts msg.center(COLS)
-    # go to reference coordinates
-    # system "clear"
-    # print "\e[0;0H"
+    @grid.each_with_index do |row, i|
+      if !row.include?(" ") && i != @grid.size  - 1
+        completed_rows << i
+        anim_array[i] = COMPLETED_ROW # row.map { |x| x == "#" ? "#" : "*" } 
 
-    array.each_with_index do |row, i|
-      row.each_with_index do |_col, j|
-        print array[i][j]
       end
-      puts
     end
-    # now loop through pieces, move cursor to their
-    # position and draw.  clipping is checked elsewhere
-    # print "\e[#{x};#{y}H"
-    # print TET  # =>
+    completed_rows.reverse.each do |i|
+      @grid.delete_at(i)
+    end
+    completed_rows.size.times do |i|
+      @grid.unshift(EMPTY_ROW)
+    end
+    if !completed_rows.empty?
+      draw('OMG', anim_array)
+      sleep 1
+      draw('GOOD JOB', @grid)
+      log = Logger.new(LOGFILE)
+      
+      log.info("THIS IS @grid after unshifting")
+      log.info(pretty(@grid))
+    end
+    return completed_rows.size
 
-    puts 'hjkl to move'
-    STDIN.echo = false
-    STDIN.raw!
   end
+end
+

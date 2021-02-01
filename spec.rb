@@ -9,23 +9,40 @@ describe Game do
   before(:each) do
     @game = Game.new(true)
     @grid = @game.grid
+    
+  end
+  after(:each) do
+    STDIN.cooked!
   end
 
   it 'merges 2d array at position' do
     pos = [3, 4]
     x = 3; y = 4
-    # binding.pry
-    @grid = @grid.mcopy.collide(TET, pos)
-    STDIN.cooked!
-    $stderr.puts @grid.to_yaml
-    binding.pry
-    expect(@grid[x][y]).to eq(TET[0][0])
-    expect(@grid[x + 1][y + 1]).to eq(TET[1][1])
+    @grid = @grid.mcopy.collide(TET_O, pos)
+    expect(@grid[x][y]).to eq(TET_O[0][0])
+    expect(@grid[x + 1][y + 1]).to eq(TET_O[1][1])
   end
 
   it 'should return nil if out of bounds' do
-    pos = [4, 0]
-    STDIN.cooked!
-    expect(@grid.collide(TET, pos)).to eq(nil)
+    # collide should jk
+    pos = [3, (@grid[0].size - 1)]
+    #@grid = @grid.mcopy.collide(TET_O, pos)
+    expect(@grid.collide(TET_O, pos)).to eq(nil)
   end
+
+  it 'should detect completed rows' do
+    @grid[ROWS - 2] = s2da("#" + "T" *(COLS - 2) + "#")
+    @grid[ROWS - 3] = s2da("#" + "T" *(COLS - 2) + "#")
+    STDIN.cooked!
+    STDOUT.puts "HIHIHIH"  # => 
+    STDOUT.puts "#{@grid.inspect}"
+    #sleep 10
+    expect(@game.process_completed_lines).to eq(2)
+
+
+
+  end
+
+
 end
+
