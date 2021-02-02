@@ -74,11 +74,11 @@ class Game
       @grid.delete_at(i)
     end
     completed_rows.size.times do |i|
-      @grid.unshift(EMPTY_ROW)
+      @grid.unshift(EMPTY_ROW.mcopy)
     end
     if !completed_rows.empty?
       draw('OMG', anim_array)
-      sleep 1
+      sleep 0.2
       draw('GOOD JOB', @grid)
       log = Logger.new(LOGFILE)
       

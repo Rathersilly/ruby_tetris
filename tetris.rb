@@ -57,7 +57,8 @@ class Game
 
   # turn_loop: from block appearing until block immobile
   def turn_loop
-    @tet = TET_2ROW#.sample
+    #@tet = TET_2ROW#.sample
+    @tet = TETS.sample
     @logger.info("turn #{@turn}")
     STDIN.iflush
     @turn_state = @grid.mcopy # save state at start of turn(each block is turn)

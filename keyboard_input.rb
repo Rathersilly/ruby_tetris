@@ -37,9 +37,16 @@ class Game
         end
         row += 1
       when 'k'
+        
         row -= 1
       when 'l'
         col += 1
+      when 'z' # rotate counter-clockwise
+        # test_grid = @grid.mcopy.collide(@tet.rotate(-1
+        # @grid = 
+      when 'x' # rotate clockwise
+      when 'v' # hold piece
+      when ' ' # drop hard
       when "\u0003"
         exit
       when 'q'
