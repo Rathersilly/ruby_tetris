@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-ROWS = 15
-COLS = 12
+ROWS = 17 # left and right columns are borders
+COLS = 12 # 1 row is bot border, 2 rows hidden at top
 
 barray = Array.new(ROWS) { Array.new(COLS) }
 barray.each_with_index do |row, i|
@@ -62,24 +62,30 @@ OO
 OO")
 
 TET_I = s2da("\
-I
-I
-I
-I")
+ I  
+ I  
+ I  
+ I  ")
 TET_L = s2da("\
-L 
-L 
-LL")
+ L 
+ L 
+ LL")
 TET_J = s2da("\
- J
- J
-JJ")
+ J 
+ J 
+JJ ")
 TET_S = s2da("\
+   
  SS
 SS ")
 TET_Z = s2da("\
+   
 ZZ 
  ZZ")
+TET_T = s2da("\
+ T 
+TTT
+   ")
 TETS = [TET_O, TET_I, TET_L, TET_J, TET_S, TET_Z]
 
 TET_ROW = s2da("XXXXX")

@@ -19,7 +19,7 @@ class Game
     @score = 0
     @grid = BOARD.mcopy
     @guys = []
-    @start_pos = [0, COLS / 2 - 1] # starting position of tet
+    @start_pos = [2, COLS / 2 - 1] # starting position of tet
     @turn = 0 # 0 is first piece, 1 is 2nd...
     @subturn = 0 # each subturn, piece descends
     # @interval = 1 # time between subturns
@@ -27,6 +27,7 @@ class Game
     @frame_time = 0.1 # @inteval.to_f/@subturn_frames
     @move = nil
     @tet = nil
+    @level = 1
 
     start
   end
@@ -66,7 +67,7 @@ class Game
     @subturn = 0
     subturn_loop
     # check for full row
-    process_completed_lines
+    increase_score(process_completed_lines)
   end
 
 
@@ -125,10 +126,10 @@ class Game
         #@logger.info(test_grid.to_s)
         unless test_grid.nil?
           @pos = test_pos.mcopy
-          @grid = test_grid
+          @grid = test_grid.mcopy
         end
         @logger.info("TWO @pos: #{@pos}, test_pos: #{test_pos}")
-        draw("T: #{@turn}, ST: #{@subturn}, F: #{frame}, m: #{@move}, p: #{@pos}") # call only if moved
+        draw("T: #{@turn}, ST: #{@subturn}, F: #{frame}, m: #{@move}, p: #{@pos}, score: #{@score}") # call only if moved
         @move = nil
         # if reaches bottom, next turn
         #
@@ -148,10 +149,12 @@ class Game
     # print "\e[0;0H"
 
     array.each_with_index do |row, i|
-      row.each_with_index do |col, j|
-        print array[i][j]
+      if i > 1
+        row.each_with_index do |col, j|
+          print array[i][j]
+        end
       end
-      puts
+      puts if i > 1
     end
     # now loop through pieces, move cursor to their
     # position and draw.  clipping is checked elsewhere
@@ -160,7 +163,7 @@ class Game
 
     puts 'hjkl to move'
     STDIN.echo = false
-    STDIN.iflush
+    #STDIN.iflush
     STDIN.raw!
   end
 end
