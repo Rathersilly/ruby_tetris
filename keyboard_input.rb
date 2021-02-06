@@ -1,27 +1,23 @@
 require 'io/console'
 require 'io/wait'
-require 'logger'
 require 'date'
 #  STDIN.echo = false
 #  STDIN.raw!
-def key_pressed #char_if_pressed
+def key_pressed
   if STDIN.ready?
     input = STDIN.read_nonblock(1) rescue nil
-    @logger.info("INPUT input: #{input}, class: #{input.class}") if !input.nil?
     if input == "\e" 
       input << STDIN.read_nonblock(3) rescue nil
       input << STDIN.read_nonblock(2) rescue nil
-      #@logger.info("JJJJJJJJtemp: #{temp}, input: #{input}, class: #{input.class}") if !input.nil?
     end
   end
   # STDIN.cooked!
-  @logger.info("input: #{input}, class: #{input.class}") if !input.nil?
   input
 
 end
 
 class Game
-  def get_move(test_pos) # return uu
+  def get_move(test_pos)
     row = test_pos[0]; col = test_pos[1]
     @move = key_pressed
     if @move

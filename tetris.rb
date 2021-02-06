@@ -11,9 +11,9 @@ LOGFILE = 'log_tetris.log'
 class Game
   attr_accessor :grid
 
-  def initialize(test = false)
+  def initialize(_test = false)
     @logger = Logger.new(LOGFILE)
-    @logger.info("Game start")
+    @logger.info('Game start')
     @quit_flag = false
     @game_over_flag = false
     @score = 0
@@ -31,11 +31,11 @@ class Game
 
     start
   end
+
   def start
     system('clear')
     draw
     game_loop
-
   end
 
   def game_loop
@@ -58,7 +58,7 @@ class Game
 
   # turn_loop: from block appearing until block immobile
   def turn_loop
-    #@tet = TET_2ROW#.sample
+    # @tet = TET_2ROW#.sample
     @tet = TETS.sample
     @logger.info("turn #{@turn}")
     STDIN.iflush
@@ -70,20 +70,19 @@ class Game
     increase_score(process_completed_lines)
   end
 
-
   def subturn_loop
     loop do # subturn loop: block descends each subturn
       break if @quit_flag == true
+
       @logger.info("T #{@turn}, ST #{@subturn}, TET #{@tet}, pos #{@pos}")
 
-      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy) #if @turn < 2
-      #logger.info("test_grid, #{pretty(test_grid)}")
-      #test_grid = test_collide(@turn_state, @tet, @pos.mcopy) #if @turn > 1
+      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy) # if @turn < 2
+      # logger.info("test_grid, #{pretty(test_grid)}")
+      # test_grid = test_collide(@turn_state, @tet, @pos.mcopy) #if @turn > 1
 
       if test_grid.nil?
         @game_over_flag = true
         break
-         
 
         # couldnt place first piece, maybe cuz lost the game
         # break
@@ -99,7 +98,7 @@ class Game
       @logger.info("@pos: #{@pos}")
 
       @pos[0] += 1 if @subturn > 0
-      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy) 
+      test_grid = @turn_state.mcopy.collide(@tet, @pos.mcopy)
       if test_grid.nil? # if dropping row makes collision
         @turn_state = @grid.mcopy
         @turn += 1
@@ -120,10 +119,11 @@ class Game
     @subturn_frames.times do |frame| # subsubturn
       test_pos = get_move(@pos)
       break if @quit_flag == true
+
       if test_pos
         @logger.info("@pos: #{@pos}, test_pos: #{test_pos}")
         test_grid = @turn_state.mcopy.collide(@tet, test_pos.mcopy)
-        #@logger.info(test_grid.to_s)
+        # @logger.info(test_grid.to_s)
         unless test_grid.nil?
           @pos = test_pos.mcopy
           @grid = test_grid.mcopy
@@ -150,7 +150,7 @@ class Game
 
     array.each_with_index do |row, i|
       if i > 1
-        row.each_with_index do |col, j|
+        row.each_with_index do |_col, j|
           print array[i][j]
         end
       end
@@ -163,10 +163,9 @@ class Game
 
     puts 'hjkl to move'
     STDIN.echo = false
-    #STDIN.iflush
+    # STDIN.iflush
     STDIN.raw!
   end
 end
 
 Game.new
-
